@@ -75,7 +75,9 @@ p {
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
-
+.kicker {
+  font-size: 1.2rem;
+}
 h2 {
   margin: 0;
   font-size: clamp(2.35rem, 4.6vw, 4.15rem);
@@ -84,7 +86,7 @@ h2 {
 
 .lede {
   color: var(--muted);
-  font-size: 1.05rem;
+  font-size: 1.08rem;
   font-weight: 300;
   line-height: 1.7;
 }
@@ -195,7 +197,7 @@ h2 {
 .nav a {
   position: relative;
   color: rgba(255, 255, 255, 0.82);
-  font-size: 0.94rem;
+  font-size: 1.5rem;
 }
 
 .nav a::after {
@@ -389,7 +391,7 @@ h2 {
   position: relative;
   margin: 0;
   overflow: hidden;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 5 / 5;
   background: #ddd7ce;
 }
 
@@ -406,12 +408,14 @@ h2 {
 .js .about-photo.in img { transform: none; }
 
 .about-photo figcaption {
+  width: 300px;
   position: absolute;
   left: 14px;
   right: 14px;
   bottom: 14px;
   display: flex;
-  align-items: center;
+  align-items: end;
+  justify-content: end;
   gap: 14px;
   padding: 14px 16px;
   background: rgba(16, 15, 13, 0.88);
@@ -430,20 +434,20 @@ h2 {
 .about-photo span { font-size: 0.92rem; line-height: 1.35; }
 
 .about-copy h2 { margin-bottom: 18px; }
-.about-copy .lede { max-width: 540px; }
+.about-copy .lede { max-width: 800px;font-size: 1.5rem; }
 
 .pillars {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 22px 28px;
+  gap: 4px 10px;
   margin-top: 36px;
 }
 
-.pillar { padding-top: 16px; border-top: 1px solid var(--line); }
+.pillar { padding: 16px; border: 1px solid var(--line); border-radius: 10px; }
 
 .pillar svg { width: 22px; height: 22px; color: var(--gold-deep); }
 
-.pillar h3 { margin: 10px 0 6px; font-family: var(--sans); font-size: 1.02rem; font-weight: 500; letter-spacing: 0; }
+.pillar h3 { margin: 10px 0 6px; font-family: var(--sans); font-size: 1.7rem; font-weight: 500; letter-spacing: 0; }
 .pillar p { color: var(--muted); font-size: 0.94rem; line-height: 1.55; }
 
 .vision { background: #ebe6de; }
@@ -485,9 +489,11 @@ h2 {
   display: flex;
   flex-direction: column;
   transition: background 0.35s var(--ease);
+  border: 1px solid var(--line);
+  /* border-radius: 10px; */
 }
 
-.service:hover { background: #fff; }
+.service:hover { background: oklch(19% .006 60); color: white;}
 
 .service-top {
   display: flex;
@@ -497,8 +503,8 @@ h2 {
 }
 
 .service-icon {
-  width: 26px;
-  height: 26px;
+  width: 50px;
+  height: 50px;
   color: var(--gold);
 }
 
@@ -752,9 +758,12 @@ h2 {
   display: block;
   margin-bottom: 6px;
   color: var(--gold-deep);
-  font-size: 0.72rem;
+  font-size: 1rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+.info-list p{
+  font-size: 1.3rem;
 }
 
 .info-list a { border-bottom: 1px solid transparent; }
@@ -764,6 +773,8 @@ h2 {
   background: #fff;
   border: 1px solid rgba(26, 24, 20, 0.08);
   padding: 36px 32px 32px;
+  box-shadow: 0 0 10px 0 var(--gold-deep);
+  border-radius: 10px;
 }
 
 .inquiry h3 { margin: 0 0 8px; font-size: 2.2rem; }
@@ -823,12 +834,12 @@ select {
   padding-bottom: 48px;
 }
 
-.footer-note { max-width: 320px; margin-top: 16px; font-weight: 300; line-height: 1.6; }
+.footer-note { max-width: 450px; margin-top: 16px; font-weight: 300; line-height: 1.6; font-size: 1.3rem;}
 
 .footer-label {
   margin-bottom: 14px;
-  color: #fff;
-  font-size: 0.75rem;
+  color: var(--gold-deep);
+  font-size: 0.9rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -840,8 +851,8 @@ select {
 .socials { display: flex; gap: 10px; margin-top: 22px; }
 
 .socials a {
-  width: 38px;
-  height: 38px;
+  width: 50px;
+  height: 50px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -849,8 +860,13 @@ select {
   transition: border-color 0.3s, color 0.3s, transform 0.3s var(--ease);
 }
 
-.socials a:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
-.socials svg { width: 16px; height: 16px; }
+.socials a:hover {
+  border-color: var(--gold);
+  color: white;
+  transform: translateY(-2px);
+  background-color: var(--gold);
+}
+.socials svg { width: 25px; height: 25px; }
 
 .footer-base {
   display: flex;
@@ -994,6 +1010,9 @@ section[id] { scroll-margin-top: 84px; }
   .logo-word { letter-spacing: 0.16em; }
   .hero-stats dt { font-size: 0.8rem; }
   .eyebrow { font-size: 0.8rem; }
+  .kicker{font-size: 0.8rem;}
+  .about-copy .lede {font-size: 0.8rem; }
+  .service-icon {width: 30px; height: 30px;}
 }
 
 @media (prefers-reduced-motion: reduce) {
