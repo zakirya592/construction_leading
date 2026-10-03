@@ -76,8 +76,12 @@
     const decimals = parseInt(el.dataset.decimals || "0", 10);
     const prefix = el.dataset.prefix || "";
     const suffix = el.dataset.suffix || "";
+    function format(value) {
+      if (decimals > 0) return value.toFixed(decimals);
+      return Math.round(value).toLocaleString("en-US");
+    }
     if (reduce || Number.isNaN(target)) {
-      el.textContent = prefix + target.toFixed(decimals) + suffix;
+      el.textContent = prefix + format(target) + suffix;
       return;
     }
     const duration = 1200;
@@ -85,7 +89,7 @@
     function frame(now) {
       const t = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
-      el.textContent = prefix + (target * eased).toFixed(decimals) + suffix;
+      el.textContent = prefix + format(target * eased) + suffix;
       if (t < 1) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);

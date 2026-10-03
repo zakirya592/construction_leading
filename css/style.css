@@ -407,28 +407,29 @@ h2 {
 
 .js .about-photo.in img { transform: none; }
 
+
+
 .about-photo figcaption {
-  width: 300px;
   position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 14px;
+  right: 22px;
+  bottom: 22px;
+  width: 210px;
+  margin: 0;
+  padding: 22px 20px 18px;
   display: flex;
-  align-items: end;
-  justify-content: end;
-  gap: 14px;
-  padding: 14px 16px;
-  background: rgba(16, 15, 13, 0.88);
-  color: #f6f3ee;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  background: #161513;
+  color: #e7d3a4;
 }
 
 .about-photo strong {
-  flex: none;
   font-family: var(--serif);
-  font-size: 2rem;
+  font-size: 2.7rem;
   font-weight: 400;
   color: var(--gold);
-  line-height: 1;
+  line-height: 0.95;
 }
 
 .about-photo span { font-size: 0.92rem; line-height: 1.35; }
@@ -1001,7 +1002,9 @@ section[id] { scroll-margin-top: 84px; }
   .hero-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 42px; }
   .hero-stats dd { font-size: 2rem; }
   .hero-inner { padding-bottom: 36px; }
-  .about-photo { aspect-ratio: 4 / 3; }
+  .about-frame { aspect-ratio: 4 / 3; }
+  .about-photo figcaption { right: 12px; bottom: 12px; width: min(200px, 62%); padding: 16px; }
+  .about-photo strong { font-size: 2.1rem; }
   .pillars, .service-grid, .form-grid, .stat-board, .quotes { grid-template-columns: 1fr; }
   .cta-inner, .footer-base { flex-direction: column; align-items: flex-start; }
   .inquiry { padding: 26px 18px; }
