@@ -86,7 +86,7 @@ h2 {
 
 .lede {
   color: var(--muted);
-  font-size: 1.08rem;
+  font-size: 1.6rem;
   font-weight: 300;
   line-height: 1.7;
 }
@@ -513,10 +513,11 @@ h2 {
   font-size: 0.82rem;
   letter-spacing: 0.06em;
   font-weight: 400;
+  font-size: 1.6rem;
 }
 
-.service h3 { margin: 28px 0 10px; font-size: 1.55rem; line-height: 1.2; }
-.service p { color: #7c776f; line-height: 1.55; font-size: 0.98rem; }
+.service h3 { margin: 28px 0 10px; font-size: 1.55rem; line-height: 1.2; font-size: 1.8rem;}
+.service p { color: #7c776f; line-height: 1.55; font-size: 1.3rem; }
 
 .more {
   margin-top: auto;
@@ -525,7 +526,7 @@ h2 {
   align-items: center;
   gap: 8px;
   color: var(--gold-deep);
-  font-size: 0.95rem;
+  font-size: 1.3rem;
 }
 
 .more svg { width: 16px; height: 16px; transition: transform 0.35s var(--ease); }
@@ -1013,6 +1014,7 @@ section[id] { scroll-margin-top: 84px; }
   .kicker{font-size: 0.8rem;}
   .about-copy .lede {font-size: 0.8rem; }
   .service-icon {width: 30px; height: 30px;}
+  .lede {font-size: 0.9rem;}
 }
 
 @media (prefers-reduced-motion: reduce) {
