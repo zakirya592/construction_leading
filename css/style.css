@@ -1005,6 +1005,40 @@ h2 {
 .info-list a { border-bottom: 1px solid transparent; }
 .info-list a:hover { border-bottom-color: var(--gold-deep); }
 
+.map-frame {
+  position: relative;
+  margin-top: 22px;
+  background: #ddd7ce;
+  border-top: 3px solid var(--gold);
+  overflow: hidden;
+}
+
+.map-frame iframe {
+  display: block;
+  width: 100%;
+  height: 280px;
+  border: 0;
+  filter: grayscale(0.45) contrast(1.05);
+  transition: filter 0.45s var(--ease);
+}
+
+.map-frame:hover iframe,
+.map-frame:focus-within iframe { filter: none; }
+
+.map-link {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 8px 12px;
+  background: var(--bg-deep);
+  color: var(--gold);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.map-link:hover { color: #fff; }
+
 .inquiry {
   background: #fff;
   border: 1px solid rgba(26, 24, 20, 0.08);
