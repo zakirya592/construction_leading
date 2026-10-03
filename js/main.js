@@ -11,6 +11,13 @@
   const thanksName = document.getElementById("thanks-name");
   const resetBtn = document.getElementById("reset-form");
   const projectType = document.getElementById("project-type");
+  const progress = document.getElementById("progress");
+  const toTop = document.getElementById("to-top");
+  const work = document.querySelector(".work");
+  const modal = document.getElementById("project-modal");
+  const filterStatus = document.getElementById("filter-status");
+  const thanksDetail = document.getElementById("thanks-detail");
+  let lastFocus = null;
 
   function syncNav() {
     const mobile = window.innerWidth <= 980;
@@ -40,7 +47,9 @@
   });
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") closeMenu();
+    if (event.key !== "Escape") return;
+    if (modal && !modal.hidden) closeModal();
+    else closeMenu();
   });
 
   window.addEventListener("resize", function () {
@@ -49,6 +58,9 @@
 
   function onScroll() {
     header.classList.toggle("scrolled", window.scrollY > 12);
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    if (progress) progress.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
+    if (toTop) toTop.classList.toggle("show", window.scrollY > 700);
   }
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -131,12 +143,83 @@
   document.querySelectorAll("[data-service]").forEach(function (link) {
     link.addEventListener("click", function () {
       projectType.value = link.dataset.service;
+      if (modal && !modal.hidden) {
+        lastFocus = null;
+        closeModal();
+      }
     });
+  });
+
+  document.querySelectorAll(".chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      const filter = chip.dataset.filter;
+      document.querySelectorAll(".chip").forEach(function (item) {
+        const on = item === chip;
+        item.classList.toggle("is-on", on);
+        item.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      let shown = 0;
+      work.querySelectorAll(".project").forEach(function (project) {
+        const match = filter === "all" || project.dataset.cat === filter;
+        project.hidden = !match;
+        if (match) shown += 1;
+      });
+      work.classList.toggle("is-filtered", filter !== "all");
+      filterStatus.textContent = shown + (shown === 1 ? " project" : " projects");
+    });
+  });
+
+  function openProject(project) {
+    const img = project.querySelector("img");
+    const modalImg = document.getElementById("modal-img");
+    modalImg.src = img.currentSrc || img.src;
+    modalImg.alt = img.alt;
+    document.getElementById("modal-tag").textContent = project.dataset.tag;
+    document.getElementById("modal-title").textContent = project.dataset.title;
+    document.getElementById("modal-meta").textContent = project.dataset.meta;
+    document.getElementById("modal-body").textContent = project.dataset.copy;
+    document.getElementById("modal-cta").dataset.service = project.dataset.service;
+    lastFocus = document.activeElement;
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
+    modal.querySelector(".modal-close").focus();
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    document.body.classList.remove("modal-open");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  work.addEventListener("click", function (event) {
+    const project = event.target.closest(".project");
+    if (project && !project.hidden) openProject(project);
+  });
+
+  work.addEventListener("keydown", function (event) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const project = event.target.closest(".project");
+    if (!project) return;
+    event.preventDefault();
+    openProject(project);
+  });
+
+  modal.addEventListener("click", function (event) {
+    if (event.target.closest("[data-close]")) closeModal();
+  });
+
+  toTop.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
   });
 
   function validEmail(value) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
+
+  form.addEventListener("input", function (event) {
+    const field = event.target.closest(".field");
+    if (field) field.classList.remove("is-invalid");
+  });
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -144,12 +227,25 @@
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
     const message = String(data.get("message") || "").trim();
+    const nameField = form.querySelector('[name="name"]').closest(".field");
+    const emailField = form.querySelector('[name="email"]').closest(".field");
+    const messageField = form.querySelector('[name="message"]').closest(".field");
+    nameField.classList.toggle("is-invalid", !name);
+    emailField.classList.toggle("is-invalid", !validEmail(email));
+    messageField.classList.toggle("is-invalid", message.length < 4);
     if (!name || !validEmail(email) || message.length < 4) {
       formError.hidden = false;
       return;
     }
     formError.hidden = true;
+    form.querySelectorAll(".field.is-invalid").forEach(function (field) {
+      field.classList.remove("is-invalid");
+    });
+    const type = String(data.get("type") || "").trim();
     thanksName.textContent = name.split(" ")[0];
+    thanksDetail.textContent = type
+      ? "We have your " + type.toLowerCase() + " inquiry and will reply within one business day."
+      : "We have your inquiry and will reply within one business day.";
     form.hidden = true;
     formNote.hidden = true;
     formSuccess.hidden = false;
@@ -161,5 +257,8 @@
     formNote.hidden = false;
     formSuccess.hidden = true;
     formError.hidden = true;
+    form.querySelectorAll(".field.is-invalid").forEach(function (field) {
+      field.classList.remove("is-invalid");
+    });
   });
 })();
