@@ -1,4 +1,5 @@
 (function () {
+  window.initSite = function () {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const header = document.getElementById("header");
   const nav = document.getElementById("site-nav");
@@ -20,6 +21,7 @@
   let lastFocus = null;
 
   function syncNav() {
+    if (!nav) return;
     const mobile = window.innerWidth <= 980;
     const open = nav.classList.contains("open");
     if (mobile && !open) nav.setAttribute("aria-hidden", "true");
@@ -27,6 +29,7 @@
   }
 
   function closeMenu() {
+    if (!nav || !menuBtn) return;
     nav.classList.remove("open");
     menuBtn.setAttribute("aria-expanded", "false");
     document.body.classList.remove("nav-open");
@@ -35,16 +38,18 @@
 
   syncNav();
 
-  menuBtn.addEventListener("click", function () {
-    const open = nav.classList.toggle("open");
-    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-    document.body.classList.toggle("nav-open", open);
-    syncNav();
-  });
+  if (menuBtn && nav) {
+    menuBtn.addEventListener("click", function () {
+      const open = nav.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      document.body.classList.toggle("nav-open", open);
+      syncNav();
+    });
 
-  nav.addEventListener("click", function (event) {
-    if (event.target.closest("a") || event.target === nav) closeMenu();
-  });
+    nav.addEventListener("click", function (event) {
+      if (event.target.closest("a") || event.target === nav) closeMenu();
+    });
+  }
 
   document.addEventListener("keydown", function (event) {
     if (event.key !== "Escape") return;
@@ -57,7 +62,7 @@
   });
 
   function onScroll() {
-    header.classList.toggle("scrolled", window.scrollY > 12);
+    if (header) header.classList.toggle("scrolled", window.scrollY > 12);
     const max = document.documentElement.scrollHeight - window.innerHeight;
     if (progress) progress.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
     if (toTop) toTop.classList.toggle("show", window.scrollY > 700);
@@ -123,7 +128,7 @@
         entry.target.querySelectorAll("[data-count]").forEach(animateCount);
         observer.unobserve(entry.target);
       });
-    }, { threshold: 0.18, rootMargin: "0px 0px -8% 0px" });
+    }, { threshold: 0.05, rootMargin: "0px 0px -8% 0px" });
     motionItems.forEach(function (el) { observer.observe(el); });
   }
 
@@ -142,7 +147,7 @@
 
   document.querySelectorAll("[data-service]").forEach(function (link) {
     link.addEventListener("click", function () {
-      projectType.value = link.dataset.service;
+      if (projectType) projectType.value = link.dataset.service;
       if (modal && !modal.hidden) {
         lastFocus = null;
         closeModal();
@@ -191,12 +196,12 @@
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
-  work.addEventListener("click", function (event) {
+  if (work) work.addEventListener("click", function (event) {
     const project = event.target.closest(".project");
     if (project && !project.hidden) openProject(project);
   });
 
-  work.addEventListener("keydown", function (event) {
+  if (work) work.addEventListener("keydown", function (event) {
     if (event.key !== "Enter" && event.key !== " ") return;
     const project = event.target.closest(".project");
     if (!project) return;
@@ -204,11 +209,13 @@
     openProject(project);
   });
 
-  modal.addEventListener("click", function (event) {
-    if (event.target.closest("[data-close]")) closeModal();
-  });
+  if (modal) {
+    modal.addEventListener("click", function (event) {
+      if (event.target.closest("[data-close]")) closeModal();
+    });
+  }
 
-  toTop.addEventListener("click", function () {
+  if (toTop) toTop.addEventListener("click", function () {
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
   });
 
@@ -216,12 +223,12 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  form.addEventListener("input", function (event) {
+  if (form) form.addEventListener("input", function (event) {
     const field = event.target.closest(".field");
     if (field) field.classList.remove("is-invalid");
   });
 
-  form.addEventListener("submit", function (event) {
+  if (form) form.addEventListener("submit", function (event) {
     event.preventDefault();
     const data = new FormData(form);
     const name = String(data.get("name") || "").trim();
@@ -251,7 +258,7 @@
     formSuccess.hidden = false;
   });
 
-  resetBtn.addEventListener("click", function () {
+  if (resetBtn) resetBtn.addEventListener("click", function () {
     form.reset();
     form.hidden = false;
     formNote.hidden = false;
@@ -261,4 +268,5 @@
       field.classList.remove("is-invalid");
     });
   });
+  };
 })();
