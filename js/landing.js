@@ -471,10 +471,93 @@
     if (!active(sections.footer)) footer.hidden = true;
     main.innerHTML = parts.join("");
 
-    const summary = textOf(about && about.description) || textOf(sections.hero && sections.hero.description);
-    document.title = label;
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta && summary) meta.setAttribute("content", summary.slice(0, 180));
+    applySeo(sections, label, logo);
+  }
+
+  function clip(text, max) {
+    const clean = String(text || "").replace(/\s+/g, " ").trim();
+    if (clean.length <= max) return clean;
+    const cut = clean.slice(0, max - 1);
+    const space = cut.lastIndexOf(" ");
+    return (space > 60 ? cut.slice(0, space) : cut).trim() + "…";
+  }
+
+  function upsertMeta(attr, key, content) {
+    if (!content) return;
+    let el = document.head.querySelector("meta[" + attr + '="' + key + '"]');
+    if (!el) {
+      el = document.createElement("meta");
+      el.setAttribute(attr, key);
+      document.head.appendChild(el);
+    }
+    el.setAttribute("content", content);
+  }
+
+  function applySeo(sections, label, logo) {
+    const about = sections.about;
+    const hero = sections.hero;
+    const contact = sections.contact;
+    const settings = (contact && contact.settings) || {};
+    const summary = clip(
+      textOf(about && about.description) || textOf(hero && hero.description) || label,
+      155
+    );
+    const title = label ? label + " | Trading & Contracting" : document.title;
+    const image = (hero && hero.image) || (about && about.image) || logo || "";
+    const pageUrl = window.location.origin ? window.location.origin + window.location.pathname : "";
+
+    document.title = title;
+    upsertMeta("name", "description", summary);
+    upsertMeta("property", "og:title", title);
+    upsertMeta("property", "og:description", summary);
+    upsertMeta("property", "og:image", image);
+    upsertMeta("property", "og:url", pageUrl);
+    upsertMeta("name", "twitter:card", "summary_large_image");
+    upsertMeta("name", "twitter:title", title);
+    upsertMeta("name", "twitter:description", summary);
+    upsertMeta("name", "twitter:image", image);
+
+    if (pageUrl) {
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        document.head.appendChild(canonical);
+      }
+      canonical.setAttribute("href", pageUrl);
+    }
+
+    const script = document.querySelector('script[type="application/ld+json"]');
+    if (!script) return;
+    let data = {};
+    try { data = JSON.parse(script.textContent); } catch (error) { return; }
+    data.url = pageUrl || data.url;
+    data.image = image || data.image;
+    data.logo = logo || data.logo;
+    data.telephone = settings.phone || data.telephone;
+    data.email = settings.email || data.email;
+    if (summary) data.description = summary;
+    if (settings.address) {
+      data.address = {
+        "@type": "PostalAddress",
+        streetAddress: settings.address,
+        addressLocality: /khobar/i.test(settings.address) ? "Al Khobar" : undefined,
+        addressCountry: "SA"
+      };
+    }
+    const services = ((sections.services && sections.services.items) || [])
+      .map(function (item) { return item && item.title; })
+      .filter(Boolean);
+    if (services.length) {
+      data.hasOfferCatalog = {
+        "@type": "OfferCatalog",
+        name: "Services",
+        itemListElement: services.map(function (name) {
+          return { "@type": "Offer", itemOffered: { "@type": "Service", name: name } };
+        })
+      };
+    }
+    script.textContent = JSON.stringify(data);
   }
 
   const loaderShownAt = Date.now();
