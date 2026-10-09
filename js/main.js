@@ -40,6 +40,7 @@
 
   if (menuBtn && nav) {
     menuBtn.addEventListener("click", function () {
+      closeLang();
       const open = nav.classList.toggle("open");
       menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
       document.body.classList.toggle("nav-open", open);
@@ -51,8 +52,50 @@
     });
   }
 
+  var langSwitch = document.querySelector(".lang-switch");
+  var langToggle = document.querySelector(".lang-toggle");
+  var langMenu = document.querySelector(".lang-menu");
+
+  function closeLang() {
+    if (!langSwitch || !langToggle) return;
+    langSwitch.classList.remove("is-open");
+    langToggle.setAttribute("aria-expanded", "false");
+    if (langMenu) langMenu.hidden = true;
+  }
+
+  function openLang() {
+    if (!langSwitch || !langToggle) return;
+    langSwitch.classList.add("is-open");
+    langToggle.setAttribute("aria-expanded", "true");
+    if (langMenu) langMenu.hidden = false;
+  }
+
+  if (langToggle) {
+    langToggle.addEventListener("click", function (event) {
+      event.stopPropagation();
+      if (langSwitch.classList.contains("is-open")) closeLang();
+      else openLang();
+    });
+  }
+
+  document.querySelectorAll(".lang-option").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (window.I18N) window.I18N.set(btn.getAttribute("data-lang"));
+    });
+  });
+
+  document.addEventListener("click", function (event) {
+    if (!langSwitch || langSwitch.contains(event.target)) return;
+    closeLang();
+  });
+
   document.addEventListener("keydown", function (event) {
     if (event.key !== "Escape") return;
+    if (langSwitch && langSwitch.classList.contains("is-open")) {
+      closeLang();
+      if (langToggle) langToggle.focus();
+      return;
+    }
     if (modal && !modal.hidden) closeModal();
     else closeMenu();
   });
@@ -250,9 +293,16 @@
     });
     const type = String(data.get("type") || "").trim();
     thanksName.textContent = name.split(" ")[0];
-    thanksDetail.textContent = type
-      ? "We have your " + type.toLowerCase() + " inquiry and will reply within one business day."
-      : "We have your inquiry and will reply within one business day.";
+    if (window.I18N && type) {
+      const label = window.I18N.get() === "ar" ? type : type.toLowerCase();
+      thanksDetail.textContent = window.I18N.t("thanksDetailType", { type: label });
+    } else if (window.I18N) {
+      thanksDetail.textContent = window.I18N.t("thanksDetail");
+    } else {
+      thanksDetail.textContent = type
+        ? "We have your " + type.toLowerCase() + " inquiry and will reply within one business day."
+        : "We have your inquiry and will reply within one business day.";
+    }
     form.hidden = true;
     formNote.hidden = true;
     formSuccess.hidden = false;

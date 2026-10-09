@@ -20,6 +20,10 @@
     hours: '<svg class="info-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4.5l3 1.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
   };
 
+  function t(key, vars) {
+    return window.I18N ? window.I18N.t(key, vars) : key;
+  }
+
   function esc(value) {
     return String(value == null ? "" : value)
       .replace(/&/g, "&amp;")
@@ -81,7 +85,7 @@
 
   function logoMarkup(url, label) {
     if (url) return '<img class="logo-img" src="' + esc(url) + '" alt="' + esc(label) + '">';
-    const word = label.split(" ").slice(0, 2).join(" ") || "Home";
+    const word = label.split(" ").slice(0, 2).join(" ") || t("home");
     return '<span class="logo-mark">' + esc(word.slice(0, 1)) + '</span><span class="logo-word">' + esc(word) + "</span>";
   }
 
@@ -97,10 +101,11 @@
       : "";
     return (
       '<div class="bar">' +
-        '<a class="logo" href="#home" aria-label="' + esc(label) + ' home">' + logoMarkup(logo, label) + "</a>" +
-        '<nav class="nav" id="site-nav" aria-label="Primary">' + links + "</nav>" +
+        '<a class="logo" href="#home" aria-label="' + esc(label) + " " + esc(t("home")) + '">' + logoMarkup(logo, label) + "</a>" +
+        '<nav class="nav" id="site-nav" aria-label="' + esc(t("primaryNav")) + '">' + links + "</nav>" +
         '<div class="header-actions">' + button +
-          '<button class="menu-btn" id="menu-btn" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>' +
+          (window.I18N ? window.I18N.switcher() : "") +
+          '<button class="menu-btn" id="menu-btn" type="button" aria-label="' + esc(t("toggleMenu")) + '" aria-expanded="false" aria-controls="site-nav"><span></span><span></span></button>' +
         "</div>" +
       "</div>"
     );
@@ -139,7 +144,7 @@
         (statLabel ? "<span>" + esc(statLabel) + "</span>" : "") + "</figcaption>"
       : "";
     const image = section.image
-      ? '<figure class="about-photo reveal"><div class="about-frame"><img src="' + esc(section.image) + '" alt="' + esc(section.title || "About") + '"></div>' + badge + "</figure>"
+      ? '<figure class="about-photo reveal"><div class="about-frame"><img src="' + esc(section.image) + '" alt="' + esc(section.title || t("aboutAlt")) + '"></div>' + badge + "</figure>"
       : "";
     const cards = items.map(function (item, index) {
       return (
@@ -193,7 +198,7 @@
 
   function renderGoals(section) {
     const image = section.image
-      ? '<figure class="goals-photo reveal"><img src="' + esc(section.image) + '" alt="' + esc(section.title || "Our goals") + '"></figure>'
+      ? '<figure class="goals-photo reveal"><img src="' + esc(section.image) + '" alt="' + esc(section.title || t("goalsAlt")) + '"></figure>'
       : "";
     return (
       '<section class="section goals" id="ourgoal">' +
@@ -216,7 +221,7 @@
           '<div class="service-top"><span class="num">' + esc(item.number || "") + "</span></div>" +
           "<h3>" + esc(item.title || "") + "</h3>" +
           rich(item.description) +
-          '<a class="more" href="#contact" data-service="' + esc(item.title || "") + '">Discuss this <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>' +
+          '<a class="more" href="#contact" data-service="' + esc(item.title || "") + '">' + esc(t("discuss")) + ' <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>' +
         "</article>"
       );
     }).join("");
@@ -225,7 +230,7 @@
         '<div class="wrap">' +
           '<div class="section-head reveal">' +
             "<div>" +
-              (section.subtitle ? '<p class="kicker">' + esc(section.subtitle) + "</p>" : '<p class="kicker">Services</p>') +
+              (section.subtitle ? '<p class="kicker">' + esc(section.subtitle) + "</p>" : '<p class="kicker">' + esc(t("services")) + "</p>") +
               (section.title ? "<h2>" + esc(section.title) + "</h2>" : "") +
             "</div>" +
             (section.description ? '<div class="lede">' + rich(section.description) + "</div>" : "") +
@@ -277,14 +282,14 @@
       return "<li>" + mark + "<strong>" + esc(name) + "</strong></li>";
     }).join("");
     const track = list
-      ? '<div class="logo-slider" aria-label="Client companies"><div class="logo-track"><ul class="logo-set">' + list + '</ul><ul class="logo-set" aria-hidden="true">' + list + "</ul></div></div>"
+      ? '<div class="logo-slider" aria-label="' + esc(t("clientCompanies")) + '"><div class="logo-track"><ul class="logo-set">' + list + '</ul><ul class="logo-set" aria-hidden="true">' + list + "</ul></div></div>"
       : "";
     return (
       '<section class="section voices" id="client">' +
         '<div class="wrap">' +
           '<div class="section-head reveal">' +
             "<div>" +
-              (section.subtitle ? '<p class="kicker">' + esc(section.subtitle) + "</p>" : '<p class="kicker">Clients</p>') +
+              (section.subtitle ? '<p class="kicker">' + esc(section.subtitle) + "</p>" : '<p class="kicker">' + esc(t("clients")) + "</p>") +
               (section.title ? "<h2>" + esc(section.title) + "</h2>" : "") +
             "</div>" +
           "</div>" +
@@ -302,7 +307,7 @@
     }).join("");
     const address = settings.address || "";
     const map = address
-      ? '<div class="map-frame"><iframe title="Map showing ' + esc(address) + '" src="https://maps.google.com/maps?q=' + encodeURIComponent(address) + '&z=14&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><a class="map-link" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address) + '" target="_blank" rel="noopener noreferrer">Open in Google Maps</a></div>'
+      ? '<div class="map-frame"><iframe title="' + esc(t("mapTitle", { address: address })) + '" src="https://maps.google.com/maps?q=' + encodeURIComponent(address) + '&z=14&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><a class="map-link" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address) + '" target="_blank" rel="noopener noreferrer">' + esc(t("openMaps")) + "</a></div>"
       : "";
     const options = ((services && services.items) || [])
       .filter(function (item) { return item && item.title; })
@@ -313,32 +318,32 @@
         '<div class="wrap">' +
           '<div class="section-head reveal">' +
             "<div>" +
-              '<p class="kicker">Contact</p>' +
-              "<h2>" + esc(section.title || "Contact") + "</h2>" +
+              '<p class="kicker">' + esc(t("contact")) + "</p>" +
+              "<h2>" + esc(section.title || t("contact")) + "</h2>" +
             "</div>" +
             (section.description ? '<div class="lede">' + rich(section.description) + "</div>" : "") +
           "</div>" +
           '<div class="contact-grid">' +
             '<div class="contact-info reveal"><ul class="info-list">' + info + "</ul>" + map + "</div>" +
             '<div class="inquiry reveal">' +
-              '<p class="kicker">' + esc(settings.email || "Inquiry") + "</p>" +
-              "<h3>Project Inquiry</h3>" +
-              '<p class="form-note" id="form-note">Tell us about your project. We respond within one business day.</p>' +
+              '<p class="kicker">' + esc(settings.email || t("inquiry")) + "</p>" +
+              "<h3>" + esc(t("projectInquiry")) + "</h3>" +
+              '<p class="form-note" id="form-note">' + esc(t("formNote")) + "</p>" +
               '<form id="inquiry-form" novalidate>' +
                 '<div class="form-grid">' +
-                  '<label class="field"><span>Full name</span><input type="text" name="name" autocomplete="name" required></label>' +
-                  '<label class="field"><span>Email</span><input type="email" name="email" autocomplete="email" required></label>' +
-                  '<label class="field"><span>Phone</span><input type="tel" name="phone" autocomplete="tel"></label>' +
-                  '<label class="field"><span>Project type</span><select name="type" id="project-type"><option value="" selected>Select a type</option>' + options + "</select></label>" +
-                  '<label class="field full"><span>Message</span><textarea name="message" rows="5" required></textarea></label>' +
+                  '<label class="field"><span>' + esc(t("fullName")) + '</span><input type="text" name="name" autocomplete="name" required></label>' +
+                  '<label class="field"><span>' + esc(t("email")) + '</span><input type="email" name="email" autocomplete="email" required></label>' +
+                  '<label class="field"><span>' + esc(t("phone")) + '</span><input type="tel" name="phone" autocomplete="tel"></label>' +
+                  '<label class="field"><span>' + esc(t("projectType")) + '</span><select name="type" id="project-type"><option value="" selected>' + esc(t("selectType")) + "</option>" + options + "</select></label>" +
+                  '<label class="field full"><span>' + esc(t("message")) + '</span><textarea name="message" rows="5" required></textarea></label>' +
                 "</div>" +
-                '<p class="form-error" id="form-error" hidden>Please add your name, a valid email, and a short note about the project.</p>' +
-                '<button class="btn" type="submit">Send Inquiry <span aria-hidden="true">&rarr;</span></button>' +
+                '<p class="form-error" id="form-error" hidden>' + esc(t("formError")) + "</p>" +
+                '<button class="btn" type="submit">' + esc(t("sendInquiry")) + ' <span aria-hidden="true">&rarr;</span></button>' +
               "</form>" +
               '<div class="form-success" id="form-success" hidden>' +
-                '<h3>Thank you, <span id="thanks-name"></span>.</h3>' +
-                '<p id="thanks-detail">We have your inquiry and will reply within one business day.</p>' +
-                '<button class="btn" type="button" id="reset-form">Send another inquiry</button>' +
+                "<h3>" + esc(t("thanksPrefix")) + ' <span id="thanks-name"></span>.</h3>' +
+                '<p id="thanks-detail">' + esc(t("thanksDetail")) + "</p>" +
+                '<button class="btn" type="button" id="reset-form">' + esc(t("sendAnother")) + "</button>" +
               "</div>" +
             "</div>" +
           "</div>" +
@@ -352,7 +357,7 @@
     const index = {};
     (section.items || []).forEach(function (item) {
       if (!item || !item.label || !item.link) return;
-      const name = item.group || "Links";
+      const name = item.group || t("links");
       if (!index[name]) {
         index[name] = { name: name, links: [] };
         groups.push(index[name]);
@@ -369,7 +374,7 @@
     return (
       '<div class="wrap footer-grid">' +
         "<div>" +
-          '<a class="logo" href="#home" aria-label="' + esc(label) + ' home">' + logoMarkup(logo, label) + "</a>" +
+          '<a class="logo" href="#home" aria-label="' + esc(label) + " " + esc(t("home")) + '">' + logoMarkup(logo, label) + "</a>" +
           (section.description ? '<div class="footer-note">' + rich(section.description) + "</div>" : "") +
         "</div>" +
         columns +
@@ -388,7 +393,7 @@
         ? '<img src="' + esc(item.image) + '" alt="' + esc(title) + '">'
         : "";
       const link = item.link
-        ? '<a class="more" href="' + esc(item.link) + '">View <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>'
+        ? '<a class="more" href="' + esc(item.link) + '">' + esc(t("view")) + ' <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>'
         : "";
       if (!title && !body && !image) return "";
       return (
@@ -469,6 +474,12 @@
 
     if (!active(sections.header)) header.hidden = true;
     if (!active(sections.footer)) footer.hidden = true;
+    if (window.I18N && !document.querySelector(".lang-switch")) {
+      const holder = document.createElement("div");
+      holder.className = "lang-fallback";
+      holder.innerHTML = window.I18N.switcher();
+      document.body.appendChild(holder);
+    }
     main.innerHTML = parts.join("");
 
     applySeo(sections, label, logo);
@@ -480,6 +491,17 @@
     const cut = clean.slice(0, max - 1);
     const space = cut.lastIndexOf(" ");
     return (space > 60 ? cut.slice(0, space) : cut).trim() + "…";
+  }
+
+  function upsertAlternate(hreflang, href) {
+    let el = document.head.querySelector('link[rel="alternate"][hreflang="' + hreflang + '"]');
+    if (!el) {
+      el = document.createElement("link");
+      el.rel = "alternate";
+      el.hreflang = hreflang;
+      document.head.appendChild(el);
+    }
+    el.setAttribute("href", href);
   }
 
   function upsertMeta(attr, key, content) {
@@ -502,9 +524,13 @@
       textOf(about && about.description) || textOf(hero && hero.description) || label,
       155
     );
-    const title = label ? label + " | Trading & Contracting" : document.title;
+    const suffix = t("seoSuffix");
+    const title = label ? label + " | " + suffix : document.title;
     const image = (hero && hero.image) || (about && about.image) || logo || "";
-    const pageUrl = window.location.origin ? window.location.origin + window.location.pathname : "";
+    const origin = window.location.origin || "";
+    const path = window.location.pathname || "/";
+    const lang = window.I18N ? window.I18N.get() : "en";
+    const pageUrl = origin ? origin + path + (lang === "ar" ? "?lang=ar" : "") : "";
 
     document.title = title;
     upsertMeta("name", "description", summary);
@@ -527,6 +553,12 @@
       canonical.setAttribute("href", pageUrl);
     }
 
+    if (origin) {
+      upsertAlternate("en", origin + path);
+      upsertAlternate("ar", origin + path + "?lang=ar");
+      upsertAlternate("x-default", origin + path);
+    }
+
     const script = document.querySelector('script[type="application/ld+json"]');
     if (!script) return;
     let data = {};
@@ -541,7 +573,7 @@
       data.address = {
         "@type": "PostalAddress",
         streetAddress: settings.address,
-        addressLocality: /khobar/i.test(settings.address) ? "Al Khobar" : undefined,
+        addressLocality: /khobar|الخبر/i.test(settings.address) ? t("locality") : undefined,
         addressCountry: "SA"
       };
     }
@@ -551,7 +583,7 @@
     if (services.length) {
       data.hasOfferCatalog = {
         "@type": "OfferCatalog",
-        name: "Services",
+        name: t("offerCatalog"),
         itemListElement: services.map(function (name) {
           return { "@type": "Offer", itemOffered: { "@type": "Service", name: name } };
         })
@@ -579,9 +611,9 @@
     loader.classList.add("is-error");
     loader.setAttribute("aria-busy", "false");
     loader.innerHTML =
-      '<p class="loader-label">Could not load</p>' +
-      '<p class="loader-note">Please check your connection and try again.</p>' +
-      '<button class="btn" type="button" id="loader-retry">Try again</button>';
+      '<p class="loader-label">' + esc(t("couldNotLoad")) + "</p>" +
+      '<p class="loader-note">' + esc(t("loaderNote")) + "</p>" +
+      '<button class="btn" type="button" id="loader-retry">' + esc(t("tryAgain")) + "</button>";
     document.getElementById("loader-retry").addEventListener("click", function () {
       window.location.reload();
     });
@@ -598,9 +630,16 @@
       payload.data.forEach(function (section) {
         if (section && section.sectionKey && active(section)) sections[section.sectionKey] = section;
       });
-      mount(sections);
-      hideLoader();
-      if (window.initSite) window.initSite();
+      const localized = window.I18N ? window.I18N.localize(sections) : Promise.resolve(sections);
+      Promise.resolve(localized).then(function (ready) {
+        mount(ready);
+        hideLoader();
+        if (window.initSite) window.initSite();
+      }).catch(function () {
+        mount(sections);
+        hideLoader();
+        if (window.initSite) window.initSite();
+      });
     })
     .catch(function () {
       showError();

@@ -3,6 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+  (function () {
+    var lang = "en";
+    try {
+      var q = new URLSearchParams(location.search).get("lang");
+      var saved = localStorage.getItem("site-lang");
+      if (q === "ar" || q === "en") lang = q;
+      else if (saved === "ar" || saved === "en") lang = saved;
+    } catch (e) {}
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  })();
+  </script>
   <title>Al Tamayuz — Trading &amp; Contracting</title>
   <meta name="description" content="AL WISAL GENERAL SERVICE is a Saudi limited liability company providing trading, contracting, and industrial support services.">
   <meta name="robots" content="index, follow">
@@ -62,8 +75,8 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=7">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=10">
   <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -89,8 +102,10 @@
 
   <noscript>
     <p>AL WISAL GENERAL SERVICE provides trading, contracting, and industrial support services in Saudi Arabia.</p>
+    <p lang="ar" dir="rtl">نقدّم خدمات التجارة والمقاولات والدعم الصناعي في المملكة العربية السعودية.</p>
   </noscript>
-  <script src="js/main.js?v=8"></script>
-  <script src="js/landing.js?v=8"></script>
+  <script src="js/i18n.js?v=3"></script>
+  <script src="js/main.js?v=10"></script>
+  <script src="js/landing.js?v=10"></script>
 </body>
 </html>
